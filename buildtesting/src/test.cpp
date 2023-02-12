@@ -1,3 +1,4 @@
+// test code; copied from glfw tutorial I think (just to make sure compilation/includes work)
 #include "pog/pog.hpp"
 #include <GLFW/glfw3.h>
  
