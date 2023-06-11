@@ -1,1 +1,2 @@
 Repo for me to learn more about computer graphics. (Also good practice setting up my compiler toolchain lol)
+This project expects SFML to be in ext/SFML. 
