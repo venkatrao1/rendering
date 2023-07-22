@@ -16,7 +16,9 @@ const std::span<sf::Color> MandelbrotRenderer::drawFrame() {
 	const static std::array<sf::Color, MandelbrotRenderer::MAX_ITER+1> palette = [](){
 		std::array<sf::Color, MandelbrotRenderer::MAX_ITER+1> ret;
 		for(size_t i = 0; i<=MandelbrotRenderer::MAX_ITER; i++){
-			sf::Uint8 iByte = static_cast<sf::Uint8>(i);
+			double lerpFrac = i / float(MandelbrotRenderer::MAX_ITER);
+			lerpFrac = 1 - std::pow(1-lerpFrac, 15);
+			sf::Uint8 iByte = static_cast<sf::Uint8>(lerpFrac*255);
 			ret[i] = sf::Color(iByte,iByte,iByte);
 		}
 		return ret;
