@@ -24,6 +24,9 @@ link_libraries( # Link all SFML libraries, because SFML isn't very big anyway
 if(MSVC)
 	# TODO: more compiler flags, debug vs release builds?
 	add_compile_options(/W4 /WX) # warning level 4, treat warnings as errors
+	if(CMAKE_BUILD_TYPE STREQUAL "Release")
+		add_compile_options(/fp:fast) # unsafe but faster hopefully
+	endif()
 else()
 	message("No compiler flags set, I only have compiled on MSVC!")
 endif()

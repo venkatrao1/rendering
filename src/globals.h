@@ -4,5 +4,5 @@
 
 using CurrentRendererType = MandelbrotRenderer;
 
-const sf::Vector2u DEFAULT_WINDOW_SIZE{800,600};
+const sf::Vector2u DEFAULT_WINDOW_SIZE{600,600};
 constexpr char DEFAULT_WINDOW_TITLE[] = "Rendering"; // SFML doesn't like string_view
