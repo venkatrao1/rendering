@@ -34,9 +34,11 @@ const std::span<sf::Color> MandelbrotRenderer::drawFrame() {
 	const real halfScreenY = sizePx.y / real(2.0);
 
 	// parallelize rows (parallelizing columns seems less useful because then you have to manually compute x with a division?)
-	const std::ranges::iota_view<size_t, size_t> rowNums(0, sizePx.y);
+	const size_t halfScreenInclusiveOfCenter = (sizePx.y+1) >> 1;
+	const std::ranges::iota_view<size_t, size_t> rowNums(0, halfScreenInclusiveOfCenter);
 	std::for_each(parallelization(), rowNums.begin(), rowNums.end(), [&](const size_t y){
-		auto* iter = &frame[y*sizePx.x];
+		auto* const beginIter =  &frame[y*sizePx.x];
+		auto* iter = beginIter;
 		for(size_t x = 0; x < sizePx.x; x++) {
 			const std::complex<real> z{
 				((x + real(0.5)) - halfScreenX) * pixelSize,
@@ -50,6 +52,10 @@ const std::span<sf::Color> MandelbrotRenderer::drawFrame() {
 			static_assert(MAX_ITER == 255); // otherwise below is invalid
 			*iter = palette[i];
 			++iter;
+		}
+		// if not center row, use a memcpy to just mirror (saves half the work because of bilateral symmetry)
+		if((y << 1) != sizePx.y - 1) {
+			memcpy(&frame[(sizePx.y - 1 - y)*sizePx.x], beginIter, sizeof(sf::Color)*sizePx.x);
 		}
 	});
 
