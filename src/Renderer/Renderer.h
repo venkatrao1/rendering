@@ -5,7 +5,7 @@
 
 #include <span>
 
-// Interface class that can take in user input as well as change in time, and render a framebuffer. 
+// Interface class that can take in user input as well as change in time, and render a framebuffer.
 class Renderer {
 public:
 	Renderer(sf::Window& window): window_(window) {};

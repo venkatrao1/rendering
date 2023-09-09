@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.26) # the one I have installed
 project(Project)
 
 # find SFML
-set(SFML_DIR "${CMAKE_SOURCE_DIR}/ext/SFML-2.5.1/lib/cmake/SFML")
 set(SFML_STATIC_LIBRARIES true)
 find_package(SFML COMPONENTS window graphics system audio network)
 
@@ -25,7 +24,9 @@ if(MSVC)
 	# TODO: more compiler flags, debug vs release builds?
 	add_compile_options(/W4 /WX) # warning level 4, treat warnings as errors
 	if(CMAKE_BUILD_TYPE STREQUAL "Release")
-		add_compile_options(/fp:fast /GL /Gr) # unsafe but faster hopefully
+		add_compile_options(/GL /Gr)
+		add_compile_options(/arch:AVX2 /favor:INTEL64) # for my machine specifically. Ideally I should have a cmake test for this?
+		add_compile_options(/fp:fast) # unsafe but faster hopefully
 	endif()
 else()
 	message("No compiler flags set, I only have compiled on MSVC!")
