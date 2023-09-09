@@ -12,7 +12,7 @@ public:
 	virtual ~Renderer() = default;
 
 	// called once per frame with an AppState. Returns a row-major framebuffer of window.width * window.height.
-	virtual const std::span<sf::Color> drawFrame() = 0;
+	virtual std::span<const sf::Color> drawFrame() = 0;
 
 protected:
 	const sf::Window& window_;

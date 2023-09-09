@@ -4,11 +4,9 @@
 
 #include <iostream>
 
-#include "src/Renderer/MandelbrotRenderer.h"
 #include "src/globals.h"
 
-int main()
-{
+int main() {
     sf::RenderWindow window(sf::VideoMode(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y), DEFAULT_WINDOW_TITLE);
     window.setVerticalSyncEnabled(true);
 
@@ -58,7 +56,7 @@ int main()
         std::cout << "Render time: " << clock.getElapsedTime().asMicroseconds() / 1000.0f << " ms\n";
 
         const auto frameSize = window.getSize();
-        if(frame.size() != frameSize.x*frameSize.y){
+        if(frame.size() != frameSize.x*frameSize.y) [[unlikely]] {
             std::cout << "Incorrect frame size! Probably the renderer's fault?\n";
             continue; // don't update texture
         }

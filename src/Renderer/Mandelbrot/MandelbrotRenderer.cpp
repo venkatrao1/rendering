@@ -1,4 +1,4 @@
-#include "src/renderer/MandelbrotRenderer.h"
+#include "MandelbrotRenderer.h"
 
 #include <vector>
 #include <span>
@@ -6,12 +6,8 @@
 #include <complex>
 #include <array>
 #include <ranges>
-#include <execution>
 
-const std::span<sf::Color> MandelbrotRenderer::drawFrame() {
-	using real = float; // for speed (can change to double if needed)
-	using parallelization = std::execution::parallel_unsequenced_policy; // no need for sequencing
-
+std::span<const sf::Color> MandelbrotRenderer::drawFrame() {
 	// compute palette beforehand (TODO: nicer colors?)
 	const static std::array<sf::Color, MandelbrotRenderer::MAX_ITER+1> palette = [](){
 		std::array<sf::Color, MandelbrotRenderer::MAX_ITER+1> ret;
@@ -25,27 +21,27 @@ const std::span<sf::Color> MandelbrotRenderer::drawFrame() {
 	}();
 
 	const auto sizePx = window_.getSize();
-	frame.resize(sizePx.x * sizePx.y, sf::Color::Magenta);
+	frame.resize(sizePx.x * sizePx.y);
 
 	// Okay, let's say the window is from -2 to 2 in the smaller dimension (fit whole image).
 	// then each pixel is half a pixel + its coord from the edge.
-	const real pixelSize = real(4.0) / std::min(sizePx.x, sizePx.y);
-	const real halfScreenX = sizePx.x / real(2.0);
-	const real halfScreenY = sizePx.y / real(2.0);
+	const Real pixelSize = Real(4.0) / std::min(sizePx.x, sizePx.y);
+	const Real halfScreenX = sizePx.x / Real(2.0);
+	const Real halfScreenY = sizePx.y / Real(2.0);
 
 	// parallelize rows (parallelizing columns seems less useful because then you have to manually compute x with a division?)
 	const size_t halfScreenInclusiveOfCenter = (sizePx.y+1) >> 1;
 	const std::ranges::iota_view<size_t, size_t> rowNums(0, halfScreenInclusiveOfCenter);
-	std::for_each(parallelization(), rowNums.begin(), rowNums.end(), [&](const size_t y){
+	std::for_each(Policy(), rowNums.begin(), rowNums.end(), [&](const size_t y){
 		auto* const beginIter =  &frame[y*sizePx.x];
 		auto* iter = beginIter;
 		for(size_t x = 0; x < sizePx.x; x++) {
-			const std::complex<real> z{
-				((x + real(0.5)) - halfScreenX) * pixelSize,
-				((y + real(0.5)) - halfScreenY) * pixelSize
+			const std::complex<Real> z{
+				((x + Real(0.5)) - halfScreenX) * pixelSize,
+				((y + Real(0.5)) - halfScreenY) * pixelSize
 			};
 			unsigned i = 0;
-			for(auto coords = z; i < MAX_ITER && std::abs(coords) < real(2); i++){
+			for(auto coords = z; i < MAX_ITER && std::abs(coords) < Real(2); i++){
 				coords *= coords;
 				coords += z;
 			}

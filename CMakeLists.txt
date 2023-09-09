@@ -2,22 +2,29 @@ cmake_minimum_required(VERSION 3.26) # the one I have installed
 
 project(Project)
 
-# find SFML
+# SFML
 set(SFML_STATIC_LIBRARIES true)
-find_package(SFML COMPONENTS window graphics system audio network)
-
-# TODO: multiple target support probably will not be good here, when to use add vs target?
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-include_directories(.) # for headers and ipp
-link_libraries( # Link all SFML libraries, because SFML isn't very big anyway
+find_package(SFML 2.6.0 COMPONENTS window graphics system audio network)
+link_libraries(
+	# Link all SFML libraries, because SFML isn't very big anyway
 	sfml-graphics
 	sfml-window
 	sfml-audio
 	sfml-network
 	sfml-system
 )
+
+# Eigen
+if(NOT Eigen3_INCLUDE_DIR)
+	message(SEND_ERROR "No Eigen3_INCLUDE_DIR specified!")
+endif()
+include_directories("${Eigen3_INCLUDE_DIR}")
+
+# TODO: multiple target support probably will not be good here, when to use add vs target?
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+include_directories(.) # for headers and ipp
 
 # compiler flags
 if(MSVC)
@@ -29,7 +36,7 @@ if(MSVC)
 		add_compile_options(/fp:fast) # unsafe but faster hopefully
 	endif()
 else()
-	message("No compiler flags set, I only have compiled on MSVC!")
+	message(AUTHOR_WARNING "No compiler flags set, I only have compiled on MSVC!")
 endif()
 
 # for IntelliSense to use

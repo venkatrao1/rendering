@@ -1,5 +1,2 @@
-target_sources(
-	app
-	PRIVATE
-	MandelbrotRenderer.cpp
-)
+add_subdirectory(Mandelbrot)
+add_subdirectory(Raytracer)
